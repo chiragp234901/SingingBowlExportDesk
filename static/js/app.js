@@ -337,6 +337,8 @@ if (pdfFileInput) {
     formData.append("file", file);
 
     try {
+      console.log("Uploading PDF:", file.name);
+
       const response = await fetch("/upload-pdf", {
         method: "POST",
         body: formData,
@@ -353,11 +355,16 @@ if (pdfFileInput) {
       alert(
         `PDF uploaded successfully!\n\n` +
           `File: ${data.filename}\n` +
-          `Pages: ${data.pages}`,
+          `Pages: ${data.pages}\n` +
+          `Text extracted: ${data.text_length} characters`,
       );
     } catch (error) {
       console.error("PDF upload error:", error);
-      alert("Failed to upload PDF: " + error.message);
+
+      alert("Failed to upload PDF:\n\n" + error.message);
     }
+
+    // Allow the same file to be selected again
+    this.value = "";
   });
 }
