@@ -1041,57 +1041,57 @@ def delete_lead(
 # SEND EMAIL TO LEAD
 # ============================================================
 
-@app.route(
-    "/leads/<int:lead_id>/send",
-    methods=["POST"]
-)
-def send_lead(
-    lead_id
-):
+@app.route("/leads/<int:lead_id>/send", methods=["POST"])
+def send_lead(lead_id):
 
     leads = load_leads()
 
-
     lead = next(
-
-        (
-
-            lead
-
-            for lead in leads
-
-            if lead.get("id") == lead_id
-
-        ),
-
+        (lead for lead in leads if lead.get("id") == lead_id),
         None
-
     )
 
-
     if not lead:
-
         return jsonify({
-
             "success": False,
-
-            "message":
-                "Lead not found."
-
+            "message": "Lead not found."
         }), 404
 
+    try:
 
-    if lead.get("contacted"):
+        send_email(
+            lead["email"],
+            request.json.get(
+                "subject",
+                "Partnership Opportunity"
+            ),
+            request.json.get(
+                "message",
+                "Hello, I would like to discuss a potential partnership."
+            )
+        )
+
+        lead["contacted"] = True
+
+        save_leads(leads)
 
         return jsonify({
+            "success": True,
+            "message": "Email sent successfully.",
+            "lead": lead
+        })
 
+    except Exception as error:
+
+        print(
+            f"Email failed for {lead.get('email')}: {error}"
+        )
+
+        return jsonify({
             "success": False,
-
-            "message":
-                "This lead has already been contacted."
-
-        }), 400
-
+            "message": str(error),
+            "lead": lead
+        }), 500
 
 
 @app.route("/leads/reset", methods=["POST"])
@@ -1523,122 +1523,71 @@ def search_leads():
 @app.route("/leads/bulk-send", methods=["POST"])
 def bulk_send():
 
-    try:
-        data = request.get_json()
+    data = request.get_json() or {}
 
-        lead_ids = data.get("leadIds", [])
-        subject = data.get("subject", "").strip()
-        message = data.get("message", "").strip()
+    lead_ids = data.get("leadIds", [])
+    subject = data.get("subject", "")
+    message = data.get("message", "")
 
-        if not lead_ids:
-            return jsonify({
-                "success": False,
-                "message": "No leads selected."
-            }), 400
+    leads = load_leads()
 
-        if not subject:
-            return jsonify({
-                "success": False,
-                "message": "Email subject is required."
-            }), 400
+    sent = []
+    failed = []
 
-        if not message:
-            return jsonify({
-                "success": False,
-                "message": "Email message is required."
-            }), 400
+    for lead_id in lead_ids:
 
-        leads = load_leads()
+        lead = next(
+            (
+                lead for lead in leads
+                if lead.get("id") == lead_id
+            ),
+            None
+        )
 
-        sent = []
-        failed = []
+        if not lead:
 
-        for lead_id in lead_ids:
+            failed.append({
+                "id": lead_id,
+                "message": "Lead not found."
+            })
 
-            # IDs arrive from JavaScript as strings
-            try:
-                lead_id = int(lead_id)
-            except (ValueError, TypeError):
-                failed.append({
-                    "id": lead_id,
-                    "error": "Invalid lead ID."
-                })
-                continue
+            continue
 
-            lead = next(
-                (
-                    item
-                    for item in leads
-                    if int(item.get("id", 0)) == lead_id
-                ),
-                None
+        try:
+
+            send_email(
+                lead["email"],
+                subject,
+                message
             )
 
-            if not lead:
-                failed.append({
-                    "id": lead_id,
-                    "error": "Lead not found."
-                })
-                continue
+            lead["contacted"] = True
 
-            recipient = lead.get("email", "").strip()
+            sent.append(lead)
 
-            if not recipient:
-                failed.append({
-                    "id": lead_id,
-                    "error": "Lead has no email address."
-                })
-                continue
+        except Exception as error:
 
-            try:
+            print(
+                f"Bulk email failed for "
+                f"{lead.get('email')}: {error}"
+            )
 
-                send_email(
-                    recipient,
-                    subject,
-                    message
-                )
+            failed.append({
+                "id": lead_id,
+                "email": lead.get("email"),
+                "message": str(error)
+            })
 
-                lead["contacted"] = True
+    save_leads(leads)
 
-                sent.append({
-                    "id": lead_id,
-                    "email": recipient
-                })
-
-            except Exception as error:
-
-                print(
-                    f"Bulk email failed for {recipient}:",
-                    error
-                )
-
-                failed.append({
-                    "id": lead_id,
-                    "email": recipient,
-                    "error": str(error)
-                })
-
-        save_leads(leads)
-
-        return jsonify({
-            "success": True,
-            "message": "Bulk email process completed.",
-            "sentCount": len(sent),
-            "failedCount": len(failed),
-            "sent": sent,
-            "failed": failed
-        })
-
-    except Exception as error:
-
-        print("BULK SEND ERROR:", error)
-
-        return jsonify({
-            "success": False,
-            "message": "Could not process bulk email.",
-            "error": str(error)
-        }), 500
-
+    return jsonify({
+        "success": True,
+        "message": "Bulk email process completed.",
+        "sent": sent,
+        "failed": failed,
+        "sentCount": len(sent),
+        "failedCount": len(failed)
+    })
 
 # ============================================================
 # RUN APPLICATION
