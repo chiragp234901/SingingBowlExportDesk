@@ -264,10 +264,8 @@ def send_email(
     message,
     attachment_path=None
 ):
-
-    sender_email = "chiragp2597@gmail.com"
-
-    sender_password = "xkwiusoxdveneawa"
+    sender_email = os.getenv("SENDER_EMAIL")
+    sender_password = os.getenv("SENDER_PASSWORD")
 
     email_service = "Gmail"
 
