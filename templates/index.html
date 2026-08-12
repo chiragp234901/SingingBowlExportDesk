@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Singing Bowl Export Desk</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+    <div class="app">
+
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-icon">SB</div>
+
+                <div>
+                    <h1>Singing Bowl Export Desk</h1>
+                    <p>Find real businesses and reach out to potential buyers</p>
+                </div>
+            </div>
+
+            <div class="top-actions">
+                <button class="btn btn-secondary">
+                    Export CSV
+                </button>
+
+                <button class="btn btn-danger">
+                    Reset Database
+                </button>
+            </div>
+        </header>
+
+
+        <main class="container">
+
+            <!-- Statistics -->
+
+            <section class="stats-grid">
+
+                <div class="stat-card">
+                    <span class="stat-label">TOTAL LEADS</span>
+                    <strong>0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">CONTACTED</span>
+                    <strong>0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">EMAILS SENT</span>
+                    <strong>0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">FAILED</span>
+                    <strong>0</strong>
+                </div>
+
+            </section>
+
+
+            <!-- Connection Status -->
+
+            <section class="status-grid">
+
+                <div class="status-card">
+                    <div>
+                        <span class="status-title">GMAIL API</span>
+                        <span class="status-description">
+                            Email connection
+                        </span>
+                    </div>
+
+                    <span class="status-badge">
+                        Not Connected
+                    </span>
+                </div>
+
+                <div class="status-card">
+                    <div>
+                        <span class="status-title">EMAIL SENDER</span>
+                        <span class="status-description">
+                            SMTP configuration
+                        </span>
+                    </div>
+
+                    <span class="status-badge">
+                        Not Configured
+                    </span>
+                </div>
+
+            </section>
+
+
+            <!-- Search -->
+
+            <section class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2>Search API</h2>
+                        <p>
+                            Find businesses that may be interested in your products.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="searchQuery">
+                            Search Query
+                        </label>
+
+                        <input
+                            id="searchQuery"
+                            type="text"
+                            placeholder="singing bowls wholesale"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="country">
+                            Country
+                        </label>
+
+                        <input
+                            id="country"
+                            type="text"
+                            placeholder="USA"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="limit">
+                            Limit
+                        </label>
+
+                        <input
+                            id="limit"
+                            type="number"
+                            value="10"
+                            min="1"
+                            max="100"
+                        >
+                    </div>
+
+                </div>
+
+                <div class="panel-actions">
+                    <button class="btn btn-primary">
+                        Search Leads
+                    </button>
+                </div>
+
+            </section>
+
+
+            <!-- PDF Upload -->
+
+            <section class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2>Catalog PDF</h2>
+                        <p>
+                            Upload a PDF and extract potential leads.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="upload-area">
+
+                    <div class="upload-icon">
+                        ↑
+                    </div>
+
+                    <h3>Upload PDF</h3>
+
+                    <p>
+                        Drag and drop a PDF here or select one from your computer.
+                    </p>
+
+                    <input
+                        type="file"
+                        id="pdfFile"
+                        accept=".pdf"
+                        hidden
+                    >
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="document.getElementById('pdfFile').click()"
+                    >
+                        Choose PDF
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- Email Template -->
+
+            <section class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2>Email Template</h2>
+                        <p>
+                            Create the message that will be sent to your leads.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    <label for="emailSubject">
+                        Subject
+                    </label>
+
+                    <input
+                        id="emailSubject"
+                        type="text"
+                        placeholder="Partnership opportunity"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="emailMessage">
+                        Message
+                    </label>
+
+                    <textarea
+                        id="emailMessage"
+                        rows="8"
+                        placeholder="Write your email here..."
+                    ></textarea>
+
+                </div>
+
+                <div class="panel-actions">
+                    <button class="btn btn-primary">
+                        Send Bulk Email
+                    </button>
+                </div>
+
+            </section>
+
+
+            <!-- Leads -->
+
+            <!-- Leads -->
+
+            <section class="panel">
+
+                <div class="panel-header leads-header">
+
+                    <div>
+                        <h2>Leads</h2>
+                        <p>
+                            Your collected business leads.
+                        </p>
+                    </div>
+
+                    <div class="lead-search">
+                        <input
+                            type="text"
+                            id="leadSearch"
+                            placeholder="Search leads..."
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Owner</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Country</th>
+                                <th>Source</th>
+                                <th>Score</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="leadsTableBody">
+
+                            <!-- JavaScript will insert leads here -->
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+</html>
