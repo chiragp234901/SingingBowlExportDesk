@@ -27,11 +27,17 @@
             </div>
 
             <div class="top-actions">
-                <button class="btn btn-secondary">
+                <button
+                    class="btn btn-secondary"
+                    id="exportCsvBtn"
+                >
                     Export CSV
                 </button>
 
-                <button class="btn btn-danger">
+                <button
+                    class="btn btn-danger"
+                    id="resetDatabaseBtn"
+                >
                     Reset Database
                 </button>
             </div>
@@ -79,8 +85,11 @@
                         </span>
                     </div>
 
-                    <span class="status-badge">
-                        Not Connected
+                    <span
+                        class="status-badge"
+                        id="gmailStatus"
+                    >
+                        Checking...
                     </span>
                 </div>
 
@@ -88,12 +97,15 @@
                     <div>
                         <span class="status-title">EMAIL SENDER</span>
                         <span class="status-description">
-                            SMTP configuration
+                            chiragp2597@gmail.com
                         </span>
                     </div>
 
-                    <span class="status-badge">
-                        Not Configured
+                    <span
+                        class="status-badge"
+                        id="senderStatus"
+                    >
+                        Checking...
                     </span>
                 </div>
 
@@ -156,7 +168,10 @@
                 </div>
 
                 <div class="panel-actions">
-                    <button class="btn btn-primary">
+                    <button
+                        class="btn btn-primary"
+                        id="searchLeadsBtn"
+                    >
                         Search Leads
                     </button>
                 </div>
@@ -250,16 +265,16 @@
                 </div>
 
                 <div class="panel-actions">
-                    <button class="btn btn-primary">
+                    <button
+                        class="btn btn-primary"
+                        id="sendBulkEmailBtn"
+                    >
                         Send Bulk Email
                     </button>
                 </div>
+                <div id="bulkEmailResults" class="bulk-email-results hidden"></div>
 
             </section>
-
-
-            <!-- Leads -->
-
             <!-- Leads -->
 
             <section class="panel">
@@ -268,6 +283,7 @@
 
                     <div>
                         <h2>Leads</h2>
+
                         <p>
                             Your collected business leads.
                         </p>
@@ -284,22 +300,67 @@
                 </div>
 
 
+                <!-- Bulk Selection Toolbar -->
+
+                <div class="bulk-toolbar">
+
+                    <label class="select-all-label">
+
+                        <input
+                            type="checkbox"
+                            id="selectAllLeads"
+                        >
+
+                        <span>Select All</span>
+
+                    </label>
+
+
+                    <span
+                        id="selectedLeadCount"
+                        class="selected-count"
+                    >
+                        0 selected
+                    </span>
+
+                </div>
+
+
                 <div class="table-wrapper">
 
                     <table>
 
                         <thead>
+
                             <tr>
-                                <th>Owner</th>
+
+                                <th class="checkbox-column">
+                                    <input
+                                        type="checkbox"
+                                        id="selectAllLeadsHeader"
+                                    >
+                                </th>
+
+                                <th>Company</th>
+
+                                <th>Contact</th>
+
                                 <th>Email</th>
-                                <th>Phone</th>
+
                                 <th>Country</th>
+
+                                <th>Interest</th>
+
                                 <th>Source</th>
-                                <th>Score</th>
+
                                 <th>Status</th>
+
                                 <th>Actions</th>
+
                             </tr>
+
                         </thead>
+
 
                         <tbody id="leadsTableBody">
 
